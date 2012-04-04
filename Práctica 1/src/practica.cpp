@@ -1,15 +1,16 @@
 #include "libs.h"
 
 //Process struct it has all the information about a process
-struct process{
+typedef struct str_process{
   string id,path,fileName;
-  int lives;
-};
+  int lives,control;
+}process;
 
 //Functions
 process getInfoProcess(string s);
 void printInfoProcess(process p);
-void createProcess(int control, process *p);
+void* fConctrl(void *ptr);
+void fCreateProcess(process *p);
 
 int main(){
 
@@ -17,19 +18,32 @@ int main(){
 	int nHilos = 0;           
     pthread_t *tablaDeHilos;  // Información de los hilos
 
+    //Read info from ArchCfg.txt
 	string s;
 	freopen("ArchCfg.txt", "r", stdin);
   	while (getline(cin,s)){
   		processes.push_back(getInfoProcess(s));
   		nHilos++;
 	}
+
 	tablaDeHilos = (pthread_t *) malloc(sizeof(pthread_t) * nHilos);
+	cout<<"Total hilos:"<<nHilos<<endl;
 	//Execute each process
-	for (int i = 0; i < processes.size(); ++i)
+	for (int i = 0; i < nHilos; i++){
+		processes[i].control = i+1;
+		pthread_create((tablaDeHilos + i), NULL, &fConctrl, (void *) &processes[i]);
+	}
+
+	for (int i = 0; i < nHilos; i++) {
+	    pthread_join(*(tablaDeHilos +i), NULL);
+	}
+    	
+	//naive way
+	/*for (int i = 0; i < processes.size(); ++i)
 	{
 		int total = processes[i].lives;
-		createProcess(i,&processes[i]);
-	}
+		fCreateProcess(&processes[i]);
+	}*/
 
 	return 0;
 }
@@ -38,8 +52,14 @@ int main(){
 
 /******** HELPERS FUNCTIONS ********/
 
+void* fConctrl(void *ptr){
+	process *p;            
+    p = (process *) ptr;  /* type cast to a pointer to process */
+    fCreateProcess(p);
+}
 
-void createProcess(int control, process *p){
+void fCreateProcess(process *p){
+
 	int retVal;
 	pid_t pid;
 	int causa;
@@ -70,9 +90,10 @@ void createProcess(int control, process *p){
 		}
 	}
 	p->lives--;	
-	cout<<"Proceso suicida "<<p->id<<" termino por causa "<<causa<<" -- Proceso Control n, vidas restantes: "<<p->lives<<endl;
+	// Messages
+	cout<<"Proceso suicida "<<p->id<<" termino por causa "<<causa<<" -- Proceso Control "<<p->control<<", vidas restantes: "<<p->lives<<endl;
 	if(p->lives != 0)
-		createProcess(control,p);
+		fCreateProcess(p);
 }
 
 process getInfoProcess(string s){
@@ -105,7 +126,3 @@ void printInfoProcess(process p){
 	cout<<"Proceso lives:"<<p.lives<<endl;
 	cout<<"\t-----------"<<endl;
 }
-
-
-
-
