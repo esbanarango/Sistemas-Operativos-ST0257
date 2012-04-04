@@ -1,0 +1,2 @@
+ProcesoSui primerSuicida { /Users/Esbanarango/Desktop/pSuicida :: pSuicida 10 }
+ProcesoSui procesoLs { /bin/ls :: ls 3 }
