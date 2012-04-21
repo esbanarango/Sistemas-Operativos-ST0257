@@ -1,0 +1,10 @@
+.phony: all
+
+all: src/Linux/conctrl src/Linux/procesoctrl
+
+src/Linux/procesoctrl: src/Linux/procesoctrl.cpp
+
+src/Linux/conctrl: src/Linux/conctrl.cpp
+
+clean: 
+	rm -f Linux/conctrl Linux/procesoctrl

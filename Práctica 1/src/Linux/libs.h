@@ -27,3 +27,9 @@
 #include <pthread.h>
 
 using namespace std;
+
+#define MAXLINE 1024
+//Colores
+#define ROJO 1
+#define VERDE 2
+#define AMARILLO 3
