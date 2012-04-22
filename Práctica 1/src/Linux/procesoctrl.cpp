@@ -1,8 +1,6 @@
 #include "libs.h"
 #include <stdlib.h>
 
-
-
 //Process struct it has all the information about a process
 typedef struct str_process{
   string id,path,fileName;
@@ -12,26 +10,61 @@ typedef struct str_process{
 void fCreateProcess(process *p);
 string intToStr(int i);
 string coloriar(int color, string texto);
+process getParamsToProcess(int argc, char *argv[]);
 
 int main(int argc, char *argv[]){
-
-	//Make a new process
-	process p;
-	p.id = argv[1]; 			   
-	p.path = argv[2]; 
-	p.fileName = argv[3]; 	   
-	p.lives = atoi(argv[4]);	
-	p.control = atoi(argv[5]);	
-
+    process p;
+    p = getParamsToProcess(argc,argv);
 	fCreateProcess(&p);
-
 	return 0;
+}
 
+process getParamsToProcess(int argc, char *argv[]){
+
+    process p;
+
+    int c;
+    int digit_optind = 0;
+
+   while (1) {
+        int this_option_optind = optind ? optind : 1;
+        int option_index = 0;
+        static struct option long_options[] = {
+            {"id",     required_argument, 0,  0 },
+            {"filepath",     required_argument, 0,  0 },
+            {"filename",  required_argument,       0,  0 },
+            {"reencarnacion",  required_argument, 0,  0 },
+            {0,         0,                 0,  0 }
+        };
+
+       c = getopt_long(argc, argv, "abc:d:012", long_options, &option_index);
+        if (c == -1)
+            break;
+
+       switch (c) {
+        case 0:
+            string argumento = long_options[option_index].name;
+            if (argumento == "id"){
+                p.id = optarg;
+            }else if(argumento == "filepath"){
+                p.path = optarg;
+            }else if(argumento == "filename"){
+                p.fileName = optarg;
+            }else if(argumento == "reencarnacion"){
+                p.lives = atoi(optarg);
+            }
+            break;
+        }
+    }
+
+   if (optind < argc) {
+        p.control = atoi(argv[optind++]);
+    }
+    return p;
 }
 
 
 void fCreateProcess(process *p){
-
 
 	int causa;
 	int retVal;
@@ -43,7 +76,6 @@ void fCreateProcess(process *p){
     
     pid_t pid;
     
-
     pipe(in);
     pipe(out);
     pipe(err);
@@ -77,20 +109,6 @@ void fCreateProcess(process *p){
         close(in[0]);
         close(out[1]);
         close(err[1]);
-        /*
-        char line[MAXLINE];
-        
-        if ( (rv = read(out[0], line, MAXLINE)) < 0 )
-        {
-            cerr << "READ ERROR FROM PIPE" << endl;
-        }
-
-
-        cout<<"Lei: "<< rv<<" lines"<<endl;
-        cout << "Para mi papa: "<< p->id <<" is: \n" << line;
-        */
-        
-        //fprintf(stderr, "Probando el error");
 
         wait(&retVal);
 
@@ -107,7 +125,7 @@ void fCreateProcess(process *p){
         }
      }
      cout<<"Proceso suicida "<<coloriar(VERDE,p->id)<<" termino por causa ";
-	 cout<<coloriar(ROJO,intToStr(causa))<<" -- Proceso Control "<<coloriar(AMARILLO,intToStr(p->control))<<", vidas restantes: "<<--p->lives<<endl; 
+	 cout<<coloriar(ROJO,intToStr(causa))<<" -- Proceso Control "<<coloriar(AMARILLO,intToStr(p->control))<<", vidas restantes: "<<((--p->lives<0)?"infinitas":intToStr(p->lives))<<endl; 
     if(p->lives != 0)
 		fCreateProcess(p);
 

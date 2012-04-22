@@ -7,11 +7,13 @@ typedef struct str_process{
 }process;
 
 //Functions
-string intToStr(int i);
 process getInfoProcess(string s);
 void printInfoProcess(process p);
+bool checkValid(process p);
 void* fConctrl(void *ptr);
+string intToStr(int i);
 void* read(void *ptr);
+
 
 int main(){
 
@@ -23,9 +25,19 @@ int main(){
 	string s;
 	freopen("../Common/ArchCfg.txt", "r", stdin);
   	while (getline(cin,s)){
-  		processes.push_back(getInfoProcess(s));
+  		process p = getInfoProcess(s);
+  		if (!checkValid(p)){
+  			printf("Porfavor revise el archivo 'ArchCfg.txt' este está mal formado.\n");
+  			exit(1);
+  		}
+  		processes.push_back(p);
   		nHilos++;
 	}
+	/*//Print process information
+	for (int i = 0; i < processes.size(); ++i)
+	{
+		printInfoProcess(processes[i]);
+	}*/
 
 	tablaDeHilos = (pthread_t *) malloc(sizeof(pthread_t) * nHilos);
 	cout<<"Total hilos:"<<nHilos<<endl;
@@ -38,14 +50,12 @@ int main(){
 	for (int i = 0; i < nHilos; i++) {
 	    pthread_join(*(tablaDeHilos +i), NULL);
 	}
-    	
 	//naive way
 	/*for (int i = 0; i < processes.size(); ++i)
 	{
 		int total = processes[i].lives;
 		fCreateProcess(&processes[i]);
 	}*/
-
 	return 0;
 }
 
@@ -56,26 +66,25 @@ int main(){
 void* fConctrl(void *ptr){
 	process *p;            
     p = (process *) ptr;  /* type cast to a pointer to process */
-
 	/*
 	procesoctrl --filepath=<path del ejecutable>
 				--filename=<nombre del ejecutable> 
 				--reencarnacion=<número de reencarnaciones>
 				<número del proceso de control>
 	*/
-    //string parametros = p->id+" "+p->path+" "+p->fileName+" "+strToInt(p->lives)+" "+strToInt(p->control);
+    string id = "--id="+p->id;
+    string filepath="--filepath="+p->path;
+    string filename="--filename="+p->fileName;
+    string reencarnacion="--reencarnacion="+intToStr(p->lives);
+    string contrlNum=intToStr(p->control);
 
-	int retVal;
 	pid_t pid;
-
-
 
 	 //Pipes
     int in[2];
     int out[2];
     int err[2];
     
-
     pipe(in);
     pipe(out);
     pipe(err);
@@ -104,7 +113,7 @@ void* fConctrl(void *ptr){
         dup2(err[1], STDERR_FILENO);
         close(err[1]);
 
-	  execl("procesoctrl", "procesoctrl", p->id.c_str(),p->path.c_str(),p->fileName.c_str(),intToStr(p->lives).c_str(),intToStr(p->control).c_str(), (char *) 0);
+	  execl("procesoctrl", "procesoctrl", id.c_str(),filepath.c_str(),filename.c_str(),reencarnacion.c_str(),contrlNum.c_str(), (char *) 0);
 	  // No se debe ejecutar este código
 	  fprintf(stderr, "No pudo ejecutar procesoctrl %s\n", strerror(errno));
 	}
@@ -122,24 +131,7 @@ void* fConctrl(void *ptr){
         pthread_join(readingIn,NULL);
         pthread_create(&readingErr, NULL, &read, (void *) &err[0]);
         pthread_join(readingErr,NULL);
-
-	  wait(&retVal);
-	  // Verifica si el hijo terminó bien
-	  if (WIFEXITED(retVal)) {
-	    //fprintf(stdout, "El proceso terminó bien: %d\n", 
-	    //WEXITSTATUS(retVal));
-	  }
-	  else if (WIFSIGNALED(retVal)) { // Fue señalizado
-	    //fprintf(stderr, "La señal capturada: %d\n",
-	    //WTERMSIG(retVal));
-	  }
-	  else if (WIFSTOPPED(retVal)) {
-	    //fprintf(stderr, "El proceso se encuentra parado: %d\n",
-	    //WSTOPSIG(retVal));
-	  }
-	}
-
-    //fCreateProcess(p);
+    }
 }
 
  string intToStr(int i){
@@ -158,7 +150,8 @@ void* read(void *ptr){
 
 	while(rv>0){
 		rv = read(*in, line, MAXLINE);
-		cout<<line;
+		if(rv>0)
+			cout<<line;
 	}
 }
 
@@ -173,6 +166,13 @@ process getInfoProcess(string s){
 	pos1 = s.find("{");
 	pos2 = s.find("::");
 	p.path = s.substr(pos1+2,pos2-pos1-3); //get the path
+	//Arreglamos si esa malo
+	while(p.path[0]==' '){
+		p.path.erase(p.path.begin());
+	}
+	while(p.path[p.path.size()-1]==' '){
+		p.path.erase(p.path.end()-1);
+	}
 	tmp = s.substr(pos2+3);
 	pos1 = tmp.find(" ");
 	p.fileName = tmp.substr(0,pos1);	   //get the fileName
@@ -182,13 +182,23 @@ process getInfoProcess(string s){
 	return p;
 }
 
-/*printf("Proceso %d:\n",i+1);
-  		printInfoProcess(processes[i]);
-		i++;*/
+bool checkValid(process p){
+	if(p.id.empty())
+		return false;
+	else if(p.path.empty())
+		return false;
+	else if(p.fileName.empty())
+		return false;
+	else if(p.lives<0)
+		return false;
+	else
+		return true;
+}
+
 void printInfoProcess(process p){	
-	cout<<"Proceso id:"<<p.id<<endl;
-	cout<<"Proceso path:"<<p.path<<endl;
-	cout<<"Proceso fileName:"<<p.fileName<<endl;
-	cout<<"Proceso lives:"<<p.lives<<endl;
+	cout<<"Proceso id:"<<p.id<<"|"<<endl;
+	cout<<"Proceso path:"<<p.path<<"|"<<endl;
+	cout<<"Proceso fileName:"<<p.fileName<<"|"<<endl;
+	cout<<"Proceso lives:"<<p.lives<<"|"<<endl;
 	cout<<"\t-----------"<<endl;
 }

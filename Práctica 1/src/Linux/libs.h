@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h>
+#include <getopt.h>
 
 using namespace std;
 
