@@ -1,0 +1,12 @@
+WeForkWeExecute
+
+Sistema de Control de Trabajos:
+
+1. Para la ejecución del sistema no se necesitan bibliotecas externas, se utilizaron las bibliotecas comunes para el manejo de este tipo de servicios.
+2. Se debe incluir el archivo "libs.h" al mismo nivel de las fuentes de conctrl.cpp y procesoctrl.cpp para cargar las bibliotecas de funciones.
+3. La aplicación no se encarga de la compilación de procesos de prueba(suicidas). La compilación de los mismos es externa y se deben especificar los ejecutables con 
+   su path respectivo al archivo de configuración ArchCfgw.txt ubicado en el directorio Common.
+   Los path de ejecutables se plantean de la siguiente forma(ejemplo):
+   C:\Users\DanielJD\Documents\Sistemas-Operativos-ST0257\Practica1\src\Windows\Procesos\proceso.exe
+
+4. Para la ejecución de procesoctrl.exe de Windows, los parámetros deberán ir en el orden siguiente: Id, Path, Filename, Life, IdProcesoControl

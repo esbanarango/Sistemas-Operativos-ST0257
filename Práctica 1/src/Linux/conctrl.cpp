@@ -7,6 +7,7 @@ typedef struct str_process{
 }process;
 
 //Functions
+string coloriar(int color, string texto);
 process getInfoProcess(string s);
 void printInfoProcess(process p);
 bool checkValid(process p);
@@ -27,14 +28,14 @@ int main(){
   	while (getline(cin,s)){
   		process p = getInfoProcess(s);
   		if (!checkValid(p)){
-  			printf("Porfavor revise el archivo 'ArchCfg.txt' este está mal formado.\n");
+  			cout<<coloriar(ROJO,"Atención: ")<<"Porfavor revise el archivo 'ArchCfg.txt' este está mal formado."<<endl;
   			exit(1);
   		}
   		processes.push_back(p);
   		nHilos++;
 	}
-	/*//Print process information
-	for (int i = 0; i < processes.size(); ++i)
+	//Print process information
+	/*for (int i = 0; i < processes.size(); ++i)
 	{
 		printInfoProcess(processes[i]);
 	}*/
@@ -182,17 +183,37 @@ process getInfoProcess(string s){
 	return p;
 }
 
+/* Validacion de archivo de entrada */
 bool checkValid(process p){
-	if(p.id.empty())
-		return false;
-	else if(p.path.empty())
-		return false;
-	else if(p.fileName.empty())
-		return false;
-	else if(p.lives<0)
-		return false;
-	else
-		return true;
+       if(p.id.empty())
+               return false;
+       else if(p.path.empty() || p.path.find("}")!=string::npos)
+               return false;
+       else if(p.fileName.empty())
+               return false;
+       else if(p.lives<0)
+               return false;
+       else
+               return true;
+}
+
+string coloriar(int color, string texto){
+    string resp=""; 
+    switch(color){
+        case VERDE:
+            resp="\e[1m\e[32m";
+        break;
+
+        case ROJO:
+            resp="\e[1m\e[31m";
+        break;
+
+        case AMARILLO:
+            resp="\e[1m\e[33m";
+        break;
+    }
+    return resp+=texto+"\e[0m";
+       
 }
 
 void printInfoProcess(process p){	

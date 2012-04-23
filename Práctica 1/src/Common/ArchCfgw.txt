@@ -1,0 +1,1 @@
+ProcesoSui tecerSuicida { C:\Users\DanielJD\Documents\Sistemas-Operativos-ST0257\Practica1\src\Windows\Procesos\ProcesoSuicidaWindows.exe :: ProcesoSuicidaWindows.exe 3 }
