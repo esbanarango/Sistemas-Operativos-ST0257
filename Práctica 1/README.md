@@ -24,7 +24,7 @@ El archivo de configuración describe la información pertinente al arranque del
 
 	ArchCfg 	→ ε
 			    | ProcesoSui ArchCfg
-	ProcesoSui  → ’ProcesoSui’Id’{’Path’::’FilenameNúmero’}’
+	ProcesoSui  → ’ProcesoSui’Id’{’Path’::’Filename NúmeroVidas’}’
 
 Cada proceso es identificado de forma única con Id (un identificador similar a los Java); Path1 identifica la ruta donde estú ubicado el ejecutable Filename). La estabilidad de cada proceso es identificada a través de Número entero positivo donde 0 significa que vive por siempre y n > 0 es el valor del número de veces que debe vivir.
 
@@ -46,7 +46,7 @@ El hilo de consola se comunica con el proceso de controlador por medio de la ent
 #####Proceso de control
 El proceso de control se encarga de controlar un proceso suicida, cada vez que este proceso suicida termine por la razón que sea debe informar a su respectivo hilo de control la causa del desceso a través de la salida estándar:
 
-![PUSH](https://bitbucket.org/esbanarango/weforkweexecute/raw/298770d042cd/screenshotExample.png)
+![PUSH](https://github.com/esbanarango/Sistemas-Operativos-ST0257/raw/master/Pra%CC%81ctica%201/screenshotExample.png)
 
 Luego de informar debe reiniciar el proceso suicida decrementando el valor de vidas restantes que le queda hasta que llegue a cero, en cuyo caso, el proceso de control de termina, informando que su labor fue llevada a cabo.
 Cada proceso de control está identificado con un número único (además del PID).
