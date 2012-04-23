@@ -7,10 +7,13 @@ typedef struct str_process{
   int lives,control;
 }process;
 
-void fCreateProcess(process *p);
-string intToStr(int i);
-string coloriar(int color, string texto);
 process getParamsToProcess(int argc, char *argv[]);
+string coloriar(int color, string texto);
+void fCreateProcess(process *p);
+void* read(void *ptr);
+string intToStr(int i);
+
+
 
 int main(int argc, char *argv[]){
     process p;
@@ -109,10 +112,18 @@ void fCreateProcess(process *p){
         close(in[0]);
         close(out[1]);
         close(err[1]);
+        /*
+        pthread_t readingIn;
+        pthread_t readingErr;
 
+        pthread_create(&readingIn, NULL, &read, (void *) &out[0]);
+        pthread_join(readingIn,NULL);
+        pthread_create(&readingErr, NULL, &read, (void *) &err[0]);
+        pthread_join(readingErr,NULL);
+        */
         wait(&retVal);
 
-        
+
         // Verifica si el hijo terminó bien
         if (WIFEXITED(retVal)) {
             causa = WEXITSTATUS(retVal);
@@ -129,6 +140,19 @@ void fCreateProcess(process *p){
     if(p->lives != 0)
 		fCreateProcess(p);
 
+}
+
+void* read(void *ptr){
+    int *in = (int*) ptr;
+    int rv=1;
+
+    char line[MAXLINE];
+
+    while(rv>0){
+        rv = read(*in, line, MAXLINE);
+        if(rv>0)
+            cout<<line;
+    }
 }
 
 string coloriar(int color, string texto){
