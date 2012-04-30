@@ -1,4 +1,4 @@
-##Práctica 2, Sitemas Operativos
+##Práctica 2
 
 ###We Fork We Execute
 
@@ -32,14 +32,14 @@ Esto implica que el proceso controlador se le añaden dos opciónes a la línea 
 	    		--idSemaforoMemoria=IdentificadorSemaforo
 	    		<número del proceso de control>
 
-El **idMemoria** identifica la región de memoria donde que comparte todos los procesos controladores y **idSemaforoMemoria** es el identificador del semáforo que se encargará de controlar el acceso a la memoria compartida.
+	El **idMemoria** identifica la región de memoria donde que comparte todos los procesos controladores y **idSemaforoMemoria** es el identificador del semáforo que se encargará de controlar el acceso a la memoria compartida.
 
 3. La memoria compartida tendrá la siguiente estructura de datos:
 
 	    struct MemoriaCompartida {
 	    	int n; // Número de procesos controladores
 	    	long int valSeq;
-	    	struct InfoMuerte muertes[n]; // Cada entrada identifica la información
+	    	struct InfoMuerte muertes[254]; // Cada entrada identifica la información
 	    				     // de cada proceso suicida.
 	    };
 
@@ -49,7 +49,7 @@ El **idMemoria** identifica la región de memoria donde que comparte todos los p
 	    	long int seq; int nDecesos;
 	    };
 
-El valor de **seq** se obtiene de incrementar por cada proceso de control el valor de **valSeq**. Cada vez que un proceso suicida muere cada proceso controlador debe incrementar el valor de **valSeq** y incrementar también el número de muertes de que lleva su suicida a cargo y registrar en el campo correspondiente la información actualizada.
+	El valor de **seq** se obtiene de incrementar por cada proceso de control el valor de **valSeq**. Cada vez que un proceso suicida muere cada proceso controlador debe incrementar el valor de **valSeq** y incrementar también el número de muertes de que lleva su suicida a cargo y registrar en el campo correspondiente la información actualizada.
 
 ##Solución
 
