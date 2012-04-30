@@ -24,30 +24,30 @@ Para lograr esto vamos a realizar varios cambios a nuestra implementación de la
 2. Todos los procesos controladores compartirán una región de memoria donde se guardará la información estadística.
 Esto implica que el proceso controlador se le añaden dos opciónes a la línea de comandos.
 
-	procesoctrl --id=<id del proceso>￼
-				--filepath=<path del ejecutable>￼
-				--filename=<nombre del ejecutable> 
-				--reencarnacion=<número de reencarnaciones>
-				--idMemoria=IdentificadorMemoriaCompartido
-				--idSemaforoMemoria=IdentificadorSemaforo
-				<número del proceso de control>
+	      procesoctrl --id=<id del proceso>
+	    		￼--filepath=<path del ejecutable>
+	    		--filename=<nombre del ejecutable>
+	    		--reencarnacion=<número de reencarnaciones>
+	    		--idMemoria=IdentificadorMemoriaCompartido
+	    		--idSemaforoMemoria=IdentificadorSemaforo
+	    		<número del proceso de control>
 
 El **idMemoria** identifica la región de memoria donde que comparte todos los procesos controladores y **idSemaforoMemoria** es el identificador del semáforo que se encargará de controlar el acceso a la memoria compartida.
 
 3. La memoria compartida tendrá la siguiente estructura de datos:
 
-	struct MemoriaCompartida {
-		int n; // Número de procesos controladores
-		long int valSeq;
-		struct InfoMuerte muertes[n]; // Cada entrada identifica la información
-	                                  // de cada proceso suicida.
-	};
+	    struct MemoriaCompartida {
+	    	int n; // Número de procesos controladores
+	    	long int valSeq;
+	    	struct InfoMuerte muertes[n]; // Cada entrada identifica la información
+	    				     // de cada proceso suicida.
+	    };
 
 4. La estructura donde se almacena la información de los decesos es la siguiente:
 
-	struct InfoMuerte { 
-		long int seq; int nDecesos;
-	};
+	    struct InfoMuerte { 
+	    	long int seq; int nDecesos;
+	    };
 
 El valor de **seq** se obtiene de incrementar por cada proceso de control el valor de **valSeq**. Cada vez que un proceso suicida muere cada proceso controlador debe incrementar el valor de **valSeq** y incrementar también el número de muertes de que lleva su suicida a cargo y registrar en el campo correspondiente la información actualizada.
 
@@ -60,4 +60,11 @@ la salida estándar y otro para el error estándar. Además de dos semáforos po
 la escritura de los suicidas y la propia del _procesoctrl_. Así se asegura que cada _procesoctrl_ tendrá acceso exclusivo a la
 salida estándar y al error estándar.
 
+####Ejemplo.
+Posible salida en la consola, teniendo el siguiente `ArchCfg.txt`:
 
+	    ProcesoSui primerSuicida { Procesos/pSuicida :: pSuicida 10 }
+	    ProcesoSui segundoSuicida { Procesos/pSuicida :: pSuicida 8 }
+	    ProcesoSui tercerSuicida { Procesos/pSuicida :: pSuicida 5 }
+
+![PUSH](https://github.com/esbanarango/Sistemas-Operativos-ST0257/blob/master/Pra%CC%81ctica%202%20\(Concurrencia\)/ScreenShotExample.png?raw=true)
