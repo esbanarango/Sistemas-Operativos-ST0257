@@ -1,0 +1,16 @@
+<grupo>
+	<nombre>We fork, we execute</nombre>
+	<repositorio>https://bitbucket.org/esbanarango/weforkweexecute</repositorio>
+	<miembro>
+		<nombre>Esteban Arango Medina</nombre>
+		<codigo>200717500010</codigo>
+		<grupo>031</grupo>
+		<email>earango5@eafit.edu.co</email>
+	</miembro>
+	<miembro>
+		<nombre>Daniel Julian Duque Tirado</nombre>
+		<codigo>200810035010</codigo>
+		<grupo>031</grupo>
+		<email>dduquet1@eafit.edu.co</email>
+	</miembro>	
+</grupo>

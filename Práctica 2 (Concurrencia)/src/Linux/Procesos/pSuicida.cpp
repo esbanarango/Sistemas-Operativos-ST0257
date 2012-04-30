@@ -1,3 +1,4 @@
+#include "libs.h"
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
@@ -19,12 +20,10 @@ main(int argc,
 
   switch (random() % 7) {
   case 0: /* Suicidio voluntario */
-    //printf("Salida voluntaria\n");
     exit(random() % 10);
     break;
 
   case 1: /* Muerte por descuido */
-    //printf("Division por cero\n");
     value1 = value1 / (value2 - value2);
     break;
 
