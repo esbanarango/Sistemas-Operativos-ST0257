@@ -262,9 +262,7 @@ void* readOut(void *ptr){
                 errno, strerror(errno));
                 exit(1);
             }
-            //cout<<"ESTO ES LO DEL OUTPUT DEL SUICIDA!!!!:"<<endl;
-             cout<<line;
-            //cout<<"FIN OUTPUT DEL SUICIDA!!!!:"<<endl;
+            write(1,line,rv);
             //Realizar operación en semáforo
             if (semop(idSemCtrlConcurrencia, &unlockOperation, 1) < 0) {
                 fprintf(stderr, "No fue posible soltar el semaforo: %d %s\n",
@@ -289,8 +287,9 @@ void* readErr(void *ptr){
     while(rv>0){
         char line[MAXLINE];
         rv = read(*in, line, MAXLINE);
-        if(rv>0){            
-            cerr<<line;
+        if(rv>0){
+            write(2,line,rv);            
+            //cerr<<line;
         }
     }
 }

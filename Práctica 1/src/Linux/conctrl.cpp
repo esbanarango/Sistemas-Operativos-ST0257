@@ -13,7 +13,8 @@ void printInfoProcess(process p);
 bool checkValid(process p);
 void* fConctrl(void *ptr);
 string intToStr(int i);
-void* read(void *ptr);
+void* readOut(void *ptr);
+void* readErr(void *ptr);
 
 
 int main(){
@@ -128,9 +129,9 @@ void* fConctrl(void *ptr){
         pthread_t readingIn;
         pthread_t readingErr;
 
-        pthread_create(&readingIn, NULL, &read, (void *) &out[0]);
+        pthread_create(&readingIn, NULL, &readOut, (void *) &out[0]);
         pthread_join(readingIn,NULL);
-        pthread_create(&readingErr, NULL, &read, (void *) &err[0]);
+        pthread_create(&readingErr, NULL, &readErr, (void *) &err[0]);
         pthread_join(readingErr,NULL);
     }
 }
@@ -143,7 +144,7 @@ void* fConctrl(void *ptr){
       return s;
 }
 
-void* read(void *ptr){
+void* readErr(void *ptr){
 	int *in = (int*) ptr;
 	int rv=1;
 
@@ -152,7 +153,20 @@ void* read(void *ptr){
 	while(rv>0){
 		rv = read(*in, line, MAXLINE);
 		if(rv>0)
-			cout<<line;
+			write(2,line,rv);
+	}
+}
+
+void* readOut(void *ptr){
+	int *in = (int*) ptr;
+	int rv=1;
+
+	char line[MAXLINE];
+
+	while(rv>0){
+		rv = read(*in, line, MAXLINE);
+		if(rv>0)
+			write(1,line,rv);
 	}
 }
 

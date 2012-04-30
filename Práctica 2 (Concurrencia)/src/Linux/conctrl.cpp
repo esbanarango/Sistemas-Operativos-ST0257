@@ -289,9 +289,7 @@ void* readOut(void *ptr){
 			                errno, strerror(errno));
 			                exit(1);
 			            }
-			            //cout<<coloriar(ROJO,"----------->")<<"Va a escribir control OUT:"<<ctrCon->control<<": "<<endl;
-						cout<<line;
-						//cout<<endl;
+			            write(1,line,rv);
 						//Realizar operación en semáforo
 			            if (semop(ctrCon->idSem, &unlockOperation, 1) < 0) {
 			                fprintf(stderr, "No fue posible soltar el semaforo: %d %s\n",
@@ -325,9 +323,7 @@ void* readErr(void *ptr){
 			                errno, strerror(errno));
 			                exit(1);
 			            }
-			            //cerr<<coloriar(ROJO,"----------->")<<"Va a escribir control ERR:"<<ctrCon->control<<": "<<endl;
-						cerr<<line;
-						//cerr<<endl;
+			            write(2,line,rv);
 						//Realizar operación en semáforo
 			            if (semop(ctrCon->idSem, &unlockOperation, 1) < 0) {
 			                fprintf(stderr, "No fue posible soltar el semaforo: %d %s\n",

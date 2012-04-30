@@ -1,3 +1,3 @@
-ProcesoSui primerSuicida { Procesos/pSuicida :: pSuicida 10 }
-ProcesoSui segundoSuicida { Procesos/pSuicida :: pSuicida 8 }
-ProcesoSui tercerSuicida { Procesos/pSuicida :: pSuicida 5 }
+ProcesoSui primerSuicida { Procesos/pSuicida :: pSuicida 50 }
+ProcesoSui segundoSuicida { Procesos/pSuicida :: pSuicida 10 }
+ProcesoSui tercerSuicida { Procesos/pSuicida :: pSuicida 500 }
